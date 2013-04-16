@@ -1,10 +1,21 @@
-var gui = require('nw.gui');
-var new_win;
+var FFI = require('ffi');
+
+function TEXT(text){
+   return new Buffer(text, 'ucs2').toString('binary');
+}
+
+var user32 = new FFI.Library('user32', {
+   'MessageBoxW': [
+      'int32', [ 'int32', 'string', 'string', 'int32' ]
+   ]
+});
+
+var msgbox = function(msg) {
+	return user32.MessageBoxW(0, TEXT(msg), TEXT('Node Robot!'), 1);
+}
 
 $(function() {
-    new_win = gui.Window.get(
-        window.open('http://zijingbt.njuftp.org/login.html')
-    );
-
-    new_win.show();
+    $("#btn").click(function() {
+    	msgbox($("#txt").val());
+    });
 });
